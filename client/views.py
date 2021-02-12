@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .serializers import ClientSerializer, ClientUpdateDeleteSerializer, CreateClientProjectSerialzier
+from .serializers import ClientSerializer, ClientUpdateDeleteSerializer, CreateClientProjectSerialzier, ProjectSerializer, ProjectListSerializer
 from . models import Client, Project, ClientProjects
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from json import loads, dumps
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -69,3 +70,12 @@ class CreateClientProject(APIView):
         data['created_at'] = p.created_at
         data['created_by'] = p.created_by.first_name
         return Response(data)
+
+class UserProjectsListView(generics.ListAPIView):
+    serializer_class = ProjectListSerializer
+    permission_classes = (IsAuthenticated,)
+    queryset = Project.objects.all()
+
+    def get_queryset(self):
+        user = self.request.user
+        return Project.objects.filter(users=user)

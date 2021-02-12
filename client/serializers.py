@@ -25,6 +25,12 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ['id', 'project_name']
         model = models.Project
 
+class ProjectListSerializer(serializers.ModelSerializer):
+    created_by = UserSerializer()
+    class Meta:
+        fields = ['id','project_name','created_at','created_by']
+        model = models.Project
+
 
 class ClientUpdateDeleteSerializer(serializers.ModelSerializer):
     '''
